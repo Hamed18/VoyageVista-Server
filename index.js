@@ -39,12 +39,19 @@ async function run() {
 		res.send(result);
 	})
 
-	// CREATE: send user input data from server to database. client: Add Spot 
+	// New Collection
 	const AllUsersAddedCollection = client.db("VoyageVista").collection("AllUsersAddedSpots");
+	// CREATE: send user input data from server to database. client: Add Spot 
 	app.post('/allUsersAddedSpots', async(req,res) => {
 		const newSpot = req.body;
 		console.log(newSpot);
 		const result = await AllUsersAddedCollection.insertOne(newSpot);
+		res.send(result);
+	})
+	// READ: get data from db. client: All Spot page
+    app.get('/AllSpots', async(req,res) => {
+		const cursor = AllUsersAddedCollection.find();
+		const result = await cursor.toArray();
 		res.send(result);
 	})
 
