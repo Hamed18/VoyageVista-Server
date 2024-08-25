@@ -24,13 +24,30 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-	// READ data stored in database
+	// READ all data (whole json data) stored in database
 	const SpotsCollection = client.db("VoyageVista").collection("TouristSpots");
     app.get('/TouristSpots', async(req,res) => {
 		const cursor = SpotsCollection.find();
 		const result = await cursor.toArray();
 		res.send(result);
 	})
+	// READ specifc object (view details card) from all json data
+	app.get('/TouristSpots/:id', async(req,res) => {
+		const id = req.params.id;
+		const query= {_id: new ObjectId(id)}
+		const result = await SpotsCollection.findOne(query);
+		res.send(result);
+	})
+
+	// CREATE: send user input data from server to database. client: Add Spot 
+	const AllUsersAddedCollection = client.db("VoyageVista").collection("AllUsersAddedSpots");
+	app.post('/allUsersAddedSpots', async(req,res) => {
+		const newSpot = req.body;
+		console.log(newSpot);
+		const result = await AllUsersAddedCollection.insertOne(newSpot);
+		res.send(result);
+	})
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
