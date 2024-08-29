@@ -56,15 +56,24 @@ async function run() {
 	})
 	// load data using query parameter
 	app.get('/AllSpots/:email', async(req,res) => {
-		const email = req.params.email;
-		console.log(req.query.email);
-		let query = {userEmail : email};
-	/*	if (req.query?.email){
-			query = {email : req.query.email}
-		}  */
-		const result = await AllUsersAddedCollection.find(query).toArray();
+			const email = req.params.email;
+			console.log(req.query.email);
+			let query = {userEmail : email};
+		/*	if (req.query?.email){
+				query = {email : req.query.email}
+			}  */
+			const result = await AllUsersAddedCollection.find(query).toArray();
+			res.send(result);
+		})
+	
+	// load single data for update api
+	app.get('/AllSpots/:email/:id', async(req,res) => {
+		const id = req.params.id;
+		const query = {_id: new ObjectId(id)}
+		const result = await AllUsersAddedCollection.findOne(query);
 		res.send(result);
 	})
+
 
 	// DELETE: delete api to delete a data from My List
 	app.delete('/AllSpots/:id', async (req, res) => {
@@ -73,6 +82,7 @@ async function run() {
 		const result = await AllUsersAddedCollection.deleteOne(query);
 		res.send(result);
 	})
+
 	
 
     // Send a ping to confirm a successful connection
