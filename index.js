@@ -66,14 +66,49 @@ async function run() {
 			res.send(result);
 		})
 	
-	// load single data for update api
+	// load single data before update api
 	app.get('/AllSpots/:email/:id', async(req,res) => {
 		const id = req.params.id;
 		const query = {_id: new ObjectId(id)}
 		const result = await AllUsersAddedCollection.findOne(query);
 		res.send(result);
 	})
+	// UPDATE
+	app.put('/AllSpots/:email/:id', async(req,res)=> {
+		const id = req.params.id;
+		const filter = {_id: new ObjectId(id)}
+		const options = {upsert: true};
+		const updatedSpot = req.body;
+		const spot = {
+			$set: {
+				userEmail : updatedSpot.userEmail, 
+				userName : updatedSpot.userName, 
+				image : updatedSpot.image, 
+				touristSpotName : updatedSpot.touristSpotName, 
+				countryName : updatedSpot.countryName, 
+				location : updatedSpot.location, 
+				shortDescription : updatedSpot.shortDescription, 
+				averageCost : updatedSpot.averageCost, 
+				seasonality : updatedSpot.seasonality, 
+				travelTime : updatedSpot.travelTime, 
+				totalVisitors : updatedSpot.totalVisitors
+		
+			}
+		}
+		const result = await AllUsersAddedCollection.updateOne(filter,spot,options);
+		res.send(result);
+	})
 
+	// load single spot
+    app.get('/allspot/:id', async(req,res) => {
+	//	console.log(req);
+		const id = req.params.id;
+	//	console.log(allspot);
+		console.log('id check',id);
+		const query = {_id: new ObjectId(id)}
+		const result = await AllUsersAddedCollection.findOne(query);
+		res.send(result);
+	})
 
 	// DELETE: delete api to delete a data from My List
 	app.delete('/AllSpots/:id', async (req, res) => {
@@ -82,8 +117,6 @@ async function run() {
 		const result = await AllUsersAddedCollection.deleteOne(query);
 		res.send(result);
 	})
-
-	
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
